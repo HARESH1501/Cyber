@@ -485,9 +485,21 @@ def download_stopwords():
 def load_model():
     """Load the DistilBERT model"""
     try:
+        # Try loading from local path first
         model_path = "data/cyberbullying_model_balanced"
-        model = DistilBertForSequenceClassification.from_pretrained(model_path)
-        tokenizer = DistilBertTokenizer.from_pretrained(model_path)
+        
+        if os.path.exists(model_path) and os.path.exists(os.path.join(model_path, "model.safetensors")):
+            model = DistilBertForSequenceClassification.from_pretrained(model_path)
+            tokenizer = DistilBertTokenizer.from_pretrained(model_path)
+        else:
+            # Fallback: Load base DistilBERT model (not fine-tuned)
+            st.warning("⚠️ Using base DistilBERT model. For best results, upload your fine-tuned model to Hugging Face.")
+            model = DistilBertForSequenceClassification.from_pretrained(
+                "distilbert-base-uncased",
+                num_labels=6
+            )
+            tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
+        
         model.eval()
         return model, tokenizer
     except Exception as e:

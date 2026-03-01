@@ -74,9 +74,20 @@ async def load_model():
         if not os.path.exists(model_path):
             model_path = "data/cyberbullying_model_balanced"
         
-        print(f"Loading model from: {model_path}")
-        model = DistilBertForSequenceClassification.from_pretrained(model_path)
-        tokenizer = DistilBertTokenizer.from_pretrained(model_path)
+        # Check if model file exists
+        if os.path.exists(model_path) and os.path.exists(os.path.join(model_path, "model.safetensors")):
+            print(f"Loading model from: {model_path}")
+            model = DistilBertForSequenceClassification.from_pretrained(model_path)
+            tokenizer = DistilBertTokenizer.from_pretrained(model_path)
+        else:
+            # Fallback: Load base DistilBERT model
+            print("Model file not found. Loading base DistilBERT model...")
+            model = DistilBertForSequenceClassification.from_pretrained(
+                "distilbert-base-uncased",
+                num_labels=6
+            )
+            tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
+        
         model.eval()
         print("Model loaded successfully!")
     except Exception as e:
