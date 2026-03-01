@@ -9,8 +9,14 @@ env/
 ENV/
 .venv
 
-# Model files (if too large for git)
-# data/cyberbullying_model_balanced/*.safetensors
+# Model files (too large for GitHub)
+data/cyberbullying_model_balanced/*.safetensors
+data/cyberbullying_model_balanced/model.safetensors
+
+# Large CSV files
+data/train.csv
+data/test.csv
+data/processed_train.csv
 
 # IDE
 .vscode/
